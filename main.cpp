@@ -103,8 +103,45 @@ bool isValidPostfix(const vector<Token>& tokens) {
 }
 
 bool isValidInfix(const vector<Token>& tokens) {
-    // TODO
-    return false;
+    if (tokens.empty()) {
+        return false;
+    }
+
+    int parenCount = 0;
+    bool expectOperand = true;
+
+    for (int i = 0; i < tokens.size(); i++) {
+        string val = tokens[i].value;
+
+        if (expectOperand) {
+            if (isdigit(val[0])) {
+                expectOperand = false;
+            }
+            else if (val == "(") {
+                parenCount++;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            if (isOperator(val)) {
+                expectOperand = true;
+            }
+            else if (val == ")") {
+                parenCount--;
+                if (parenCount < 0) {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    // valid infix must end after an operand and all parentheses must close
+    return !expectOperand && parenCount == 0;
 }
 
 // Conversion
@@ -119,10 +156,53 @@ vector<Token> infixToPostfix(const vector<Token>& tokens) {
 
 double evalPostfix(const vector<Token>& tokens) {
     ArrayStack<double> stack;
-    // TODO
-    return 0.0;
-}
 
+    for (int i = 0; i < tokens.size(); i++) {
+        string val = tokens[i].value;
+
+        // if it is a number, push it
+        if (isdigit(val[0])) {
+            stack.push(stod(val));
+        }
+        else if (isOperator(val)) {
+            if (stack.size() < 2) {
+                throw runtime_error("invalid postfix expression");
+            }
+
+            double b = stack.top();
+            stack.pop();
+
+            double a = stack.top();
+            stack.pop();
+
+            double result = 0;
+
+            if (val == "+") {
+                result = a + b;
+            }
+            else if (val == "-") {
+                result = a - b;
+            }
+            else if (val == "*") {
+                result = a * b;
+            }
+            else if (val == "/") {
+                result = a / b;
+            }
+
+            stack.push(result);
+        }
+        else {
+            throw runtime_error("invalid token");
+        }
+    }
+
+    if (stack.size() != 1) {
+        throw runtime_error("invalid postfix expression");
+    }
+
+    return stack.top();
+}
 // Main
 
 int main() {
