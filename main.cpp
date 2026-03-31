@@ -65,15 +65,41 @@ bool isOperator(const string& s) {
 }
 
 int precedence(const string& op) {
-    // TODO
+    if (op == "*" || op == "/") {
+        return 2;
+    }
+    else if (op == "+" || op == "-") {
+        return 1;
+    }
     return 0;
 }
-
 // Detection
 
 bool isValidPostfix(const vector<Token>& tokens) {
-    // TODO
-    return false;
+    int count = 0;
+
+    if (tokens.empty()) {
+        return false;
+    }
+
+    for (int i = 0; i < tokens.size(); i++) {
+        string val = tokens[i].value;
+
+        if (isdigit(val[0])) {
+            count++;
+        }
+        else if (isOperator(val)) {
+            if (count < 2) {
+                return false;
+            }
+            count--;
+        }
+        else {
+            return false;
+        }
+    }
+
+    return count == 1;
 }
 
 bool isValidInfix(const vector<Token>& tokens) {
