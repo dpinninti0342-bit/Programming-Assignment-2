@@ -6,7 +6,7 @@
 ### Entry 1
 **Date:** 2026-03-27  
 **Task worked on:** Project setup in GitHub and CLion  
-**Issue / Notes:** I created the new public GitHub repository and cloned it into CLion. At first the file was not part of a project target, so I had to create and fix the CMake setup before I could run anything.  
+**Issue / Notes:** i created the new public GitHub repository and cloned it into CLion. At first the file was not part of a project target, so I had to create and fix the CMake setup before I could run anything.  
 **Testing / Result:** After fixing `CMakeLists.txt`, the project opened correctly and the Run button worked.
 
 ---
