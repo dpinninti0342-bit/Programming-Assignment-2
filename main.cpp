@@ -148,7 +148,54 @@ bool isValidInfix(const vector<Token>& tokens) {
 
 vector<Token> infixToPostfix(const vector<Token>& tokens) {
     vector<Token> output;
-    // TODO
+    ArrayStack<string> ops;
+
+    for (int i = 0; i < tokens.size(); i++) {
+        string val = tokens[i].value;
+
+        // if it is a number, send it to output
+        if (isdigit(val[0])) {
+            output.push_back(tokens[i]);
+        }
+        // left parenthesis goes on stack
+        else if (val == "(") {
+            ops.push(val);
+        }
+        // right parenthesis pops until left parenthesis
+        else if (val == ")") {
+            while (!ops.empty() && ops.top() != "(") {
+                Token t;
+                t.value = ops.top();
+                output.push_back(t);
+                ops.pop();
+            }
+
+            if (!ops.empty() && ops.top() == "(") {
+                ops.pop();
+            }
+        }
+        // operator
+        else if (isOperator(val)) {
+            while (!ops.empty() && isOperator(ops.top()) &&
+                   precedence(ops.top()) >= precedence(val)) {
+                Token t;
+                t.value = ops.top();
+                output.push_back(t);
+                ops.pop();
+                   }
+
+            ops.push(val);
+        }
+    }
+
+    // pop remaining operators
+    while (!ops.empty()) {
+        Token t;
+        t.value = ops.top();
+        output.push_back(t);
+        ops.pop();
+    }
+
     return output;
 }
 
